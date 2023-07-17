@@ -1419,8 +1419,8 @@ func validateBuildOptions(
 	}
 
 	// Code splitting is experimental and currently only enabled for ES6 modules
-	if options.CodeSplitting && options.OutputFormat != config.FormatESModule {
-		log.AddError(nil, logger.Range{}, "Splitting currently only works with the \"esm\" format")
+	if options.CodeSplitting && options.OutputFormat != config.FormatCommonJS && options.OutputFormat != config.FormatESModule {
+		log.AddError(nil, logger.Range{}, "Splitting currently only works with the \"esm\" and \"cjs\" format")
 	}
 
 	// Code splitting is experimental and currently only enabled for ES6 modules

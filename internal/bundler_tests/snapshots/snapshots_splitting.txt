@@ -254,6 +254,37 @@ import"./chunk-TOGNOMR3.js";
 console.log(123);
 
 ================================================================================
+TestSplittingDynamicAndNotDynamicCommonJSIntoCJS
+---------- /out/entry.js ----------
+var {
+  __toESM,
+  require_foo
+} = require("./chunk-PJZM4OEH.js");
+
+// entry.js
+var import_foo = __toESM(require_foo());
+import("./foo-BZ5LTU6Z.js").then(({ default: { bar: b } }) => console.log(import_foo.bar, b));
+
+---------- /out/foo-BZ5LTU6Z.js ----------
+var {
+  require_foo
+} = require("./chunk-PJZM4OEH.js");
+module.exports = require_foo();
+
+---------- /out/chunk-PJZM4OEH.js ----------
+// foo.js
+var require_foo = __commonJS({
+  "foo.js"(exports) {
+    exports.bar = 123;
+  }
+});
+
+module.exports = {
+  __toESM,
+  require_foo
+};
+
+================================================================================
 TestSplittingDynamicAndNotDynamicCommonJSIntoES6
 ---------- /out/entry.js ----------
 import {
@@ -285,6 +316,31 @@ export {
 };
 
 ================================================================================
+TestSplittingDynamicAndNotDynamicES6IntoCJS
+---------- /out/entry.js ----------
+var {
+  __toESM,
+  bar
+} = require("./chunk-WVHGPUJW.js");
+
+// entry.js
+import("./foo-2AOUINFQ.js").then(({ bar: b }) => console.log(bar, b));
+
+---------- /out/foo-2AOUINFQ.js ----------
+var {
+  bar
+} = require("./chunk-WVHGPUJW.js");
+
+---------- /out/chunk-WVHGPUJW.js ----------
+// foo.js
+var bar = 123;
+
+module.exports = {
+  __toESM,
+  bar
+};
+
+================================================================================
 TestSplittingDynamicAndNotDynamicES6IntoES6
 ---------- /out/entry.js ----------
 import {
@@ -311,6 +367,35 @@ export {
 };
 
 ================================================================================
+TestSplittingDynamicCommonJSIntoCJS
+---------- /out/entry.js ----------
+var {
+  __toESM
+} = require("./chunk-VYY6TZ3T.js");
+
+// entry.js
+import("./foo-DQISHIN7.js").then(({ default: { bar } }) => console.log(bar));
+
+---------- /out/foo-DQISHIN7.js ----------
+var {
+  __commonJS
+} = require("./chunk-VYY6TZ3T.js");
+
+// foo.js
+var require_foo = __commonJS({
+  "foo.js"(exports) {
+    exports.bar = 123;
+  }
+});
+module.exports = require_foo();
+
+---------- /out/chunk-VYY6TZ3T.js ----------
+module.exports = {
+  __commonJS,
+  __toESM
+};
+
+================================================================================
 TestSplittingDynamicCommonJSIntoES6
 ---------- /out/entry.js ----------
 // entry.js
@@ -324,6 +409,27 @@ var require_foo = __commonJS({
   }
 });
 export default require_foo();
+
+================================================================================
+TestSplittingDynamicES6IntoCJS
+---------- /out/entry.js ----------
+var {
+  __toESM
+} = require("./chunk-6EFXOIHK.js");
+
+// entry.js
+import("./foo-64APWCPQ.js").then(({ bar }) => console.log(bar));
+
+---------- /out/foo-64APWCPQ.js ----------
+require("./chunk-6EFXOIHK.js");
+
+// foo.js
+var bar = 123;
+
+---------- /out/chunk-6EFXOIHK.js ----------
+module.exports = {
+  __toESM
+};
 
 ================================================================================
 TestSplittingDynamicES6IntoES6
@@ -537,6 +643,38 @@ export {
 };
 
 ================================================================================
+TestSplittingSharedCommonJSIntoCJS
+---------- /out/a.js ----------
+var {
+  require_shared
+} = require("./chunk-7JMLSZOY.js");
+
+// a.js
+var { foo } = require_shared();
+console.log(foo);
+
+---------- /out/b.js ----------
+var {
+  require_shared
+} = require("./chunk-7JMLSZOY.js");
+
+// b.js
+var { foo } = require_shared();
+console.log(foo);
+
+---------- /out/chunk-7JMLSZOY.js ----------
+// shared.js
+var require_shared = __commonJS({
+  "shared.js"(exports) {
+    exports.foo = 123;
+  }
+});
+
+module.exports = {
+  require_shared
+};
+
+================================================================================
 TestSplittingSharedCommonJSIntoES6
 ---------- /out/a.js ----------
 import {
@@ -566,6 +704,32 @@ var require_shared = __commonJS({
 
 export {
   require_shared
+};
+
+================================================================================
+TestSplittingSharedES6IntoCJS
+---------- /out/a.js ----------
+var {
+  foo
+} = require("./chunk-YKDLWRHV.js");
+
+// a.js
+console.log(foo);
+
+---------- /out/b.js ----------
+var {
+  foo
+} = require("./chunk-YKDLWRHV.js");
+
+// b.js
+console.log(foo);
+
+---------- /out/chunk-YKDLWRHV.js ----------
+// shared.js
+var foo = 123;
+
+module.exports = {
+  foo
 };
 
 ================================================================================

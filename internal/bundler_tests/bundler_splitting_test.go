@@ -33,6 +33,29 @@ func TestSplittingSharedES6IntoES6(t *testing.T) {
 	})
 }
 
+func TestSplittingSharedES6IntoCJS(t *testing.T) {
+	splitting_suite.expectBundled(t, bundled{
+		files: map[string]string{
+			"/a.js": `
+				import {foo} from "./shared.js"
+				console.log(foo)
+			`,
+			"/b.js": `
+				import {foo} from "./shared.js"
+				console.log(foo)
+			`,
+			"/shared.js": `export let foo = 123`,
+		},
+		entryPaths: []string{"/a.js", "/b.js"},
+		options: config.Options{
+			Mode:          config.ModeBundle,
+			CodeSplitting: true,
+			OutputFormat:  config.FormatCommonJS,
+			AbsOutputDir:  "/out",
+		},
+	})
+}
+
 func TestSplittingSharedCommonJSIntoES6(t *testing.T) {
 	splitting_suite.expectBundled(t, bundled{
 		files: map[string]string{
@@ -51,6 +74,29 @@ func TestSplittingSharedCommonJSIntoES6(t *testing.T) {
 			Mode:          config.ModeBundle,
 			CodeSplitting: true,
 			OutputFormat:  config.FormatESModule,
+			AbsOutputDir:  "/out",
+		},
+	})
+}
+
+func TestSplittingSharedCommonJSIntoCJS(t *testing.T) {
+	splitting_suite.expectBundled(t, bundled{
+		files: map[string]string{
+			"/a.js": `
+				const {foo} = require("./shared.js")
+				console.log(foo)
+			`,
+			"/b.js": `
+				const {foo} = require("./shared.js")
+				console.log(foo)
+			`,
+			"/shared.js": `exports.foo = 123`,
+		},
+		entryPaths: []string{"/a.js", "/b.js"},
+		options: config.Options{
+			Mode:          config.ModeBundle,
+			CodeSplitting: true,
+			OutputFormat:  config.FormatCommonJS,
 			AbsOutputDir:  "/out",
 		},
 	})
@@ -76,6 +122,26 @@ func TestSplittingDynamicES6IntoES6(t *testing.T) {
 	})
 }
 
+func TestSplittingDynamicES6IntoCJS(t *testing.T) {
+	splitting_suite.expectBundled(t, bundled{
+		files: map[string]string{
+			"/entry.js": `
+				import("./foo.js").then(({bar}) => console.log(bar))
+			`,
+			"/foo.js": `
+				export let bar = 123
+			`,
+		},
+		entryPaths: []string{"/entry.js"},
+		options: config.Options{
+			Mode:          config.ModeBundle,
+			CodeSplitting: true,
+			OutputFormat:  config.FormatCommonJS,
+			AbsOutputDir:  "/out",
+		},
+	})
+}
+
 func TestSplittingDynamicCommonJSIntoES6(t *testing.T) {
 	splitting_suite.expectBundled(t, bundled{
 		files: map[string]string{
@@ -91,6 +157,26 @@ func TestSplittingDynamicCommonJSIntoES6(t *testing.T) {
 			Mode:          config.ModeBundle,
 			CodeSplitting: true,
 			OutputFormat:  config.FormatESModule,
+			AbsOutputDir:  "/out",
+		},
+	})
+}
+
+func TestSplittingDynamicCommonJSIntoCJS(t *testing.T) {
+	splitting_suite.expectBundled(t, bundled{
+		files: map[string]string{
+			"/entry.js": `
+				import("./foo.js").then(({default: {bar}}) => console.log(bar))
+			`,
+			"/foo.js": `
+				exports.bar = 123
+			`,
+		},
+		entryPaths: []string{"/entry.js"},
+		options: config.Options{
+			Mode:          config.ModeBundle,
+			CodeSplitting: true,
+			OutputFormat:  config.FormatCommonJS,
 			AbsOutputDir:  "/out",
 		},
 	})
@@ -117,6 +203,27 @@ func TestSplittingDynamicAndNotDynamicES6IntoES6(t *testing.T) {
 	})
 }
 
+func TestSplittingDynamicAndNotDynamicES6IntoCJS(t *testing.T) {
+	splitting_suite.expectBundled(t, bundled{
+		files: map[string]string{
+			"/entry.js": `
+				import {bar as a} from "./foo.js"
+				import("./foo.js").then(({bar: b}) => console.log(a, b))
+			`,
+			"/foo.js": `
+				export let bar = 123
+			`,
+		},
+		entryPaths: []string{"/entry.js"},
+		options: config.Options{
+			Mode:          config.ModeBundle,
+			CodeSplitting: true,
+			OutputFormat:  config.FormatCommonJS,
+			AbsOutputDir:  "/out",
+		},
+	})
+}
+
 func TestSplittingDynamicAndNotDynamicCommonJSIntoES6(t *testing.T) {
 	splitting_suite.expectBundled(t, bundled{
 		files: map[string]string{
@@ -133,6 +240,27 @@ func TestSplittingDynamicAndNotDynamicCommonJSIntoES6(t *testing.T) {
 			Mode:          config.ModeBundle,
 			CodeSplitting: true,
 			OutputFormat:  config.FormatESModule,
+			AbsOutputDir:  "/out",
+		},
+	})
+}
+
+func TestSplittingDynamicAndNotDynamicCommonJSIntoCJS(t *testing.T) {
+	splitting_suite.expectBundled(t, bundled{
+		files: map[string]string{
+			"/entry.js": `
+				import {bar as a} from "./foo.js"
+				import("./foo.js").then(({default: {bar: b}}) => console.log(a, b))
+			`,
+			"/foo.js": `
+				exports.bar = 123
+			`,
+		},
+		entryPaths: []string{"/entry.js"},
+		options: config.Options{
+			Mode:          config.ModeBundle,
+			CodeSplitting: true,
+			OutputFormat:  config.FormatCommonJS,
 			AbsOutputDir:  "/out",
 		},
 	})
